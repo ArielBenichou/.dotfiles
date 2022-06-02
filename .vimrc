@@ -1,8 +1,21 @@
-syntax on " highlight syntax
-set number " show line numbers
-set noswapfile " disable the swapfile
-set hlsearch " highlight all results
-set ignorecase " ignore case in search
-set incsearch " show search results as you type
-let mapleader = "'"
-inoremap jk <ESC> "remap jk to esc
+syntax on
+set exrc
+set guicursor=
+set relativenumber
+set nu
+set nohlsearch
+set hidden
+set noerrorbells
+set tabstop=4 softtabstop=4
+set shiftwidth=4
+set expandtab
+set smartindent
+set nowrap
+set noswapfile
+set nobackup
+set undodir=~/.vim/undodir
+set undofile
+set incsearch
+set scrolloff=8
+set signcolumn=yes
+set colorcolumn=80
