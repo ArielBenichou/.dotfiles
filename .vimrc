@@ -70,6 +70,9 @@ set wildmode=list:longest
 " Wildmenu will ignore files with these extensions.
 set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
 
+" Give more space to cmd message
+set cmdheight=2
+
 " Enable type file detection. 
 " Vim will be able to try to detect the type of file in use.
 filetype on
@@ -82,7 +85,6 @@ filetype indent on
 
 " }}}
 
-
 " PLUGINS ---------------------------------------------------------------- {{{
 
 call plug#begin('~/.vim/plugged')
@@ -90,13 +92,25 @@ call plug#begin('~/.vim/plugged')
   Plug 'dense-analysis/ale'
 
   Plug 'preservim/nerdtree'
+  
+  Plug 'arcticicestudio/nord-vim'
 
+  Plug 'bluz71/vim-nightfly-guicolors'
+
+  Plug 'gruvbox-community/gruvbox'
+
+  Plug 'kyoz/purify', { 'rtp': 'vim' }
+  
 call plug#end()
 
 " }}}
 
-
 " MAPPINGS --------------------------------------------------------------- {{{
+
+let mapleader = "\\"
+
+" Alt Escape of insert mode
+inoremap jj <esc>
 
 " Disable the arrows
 nnoremap <Left> :echo "No left for you!"<CR>
@@ -111,8 +125,15 @@ inoremap <Up> <C-o>:echo "No up for you!"<CR>
 nnoremap <Down> :echo "No down for you!"<CR>
 vnoremap <Down> :<C-u>echo "No down for you!"<CR>
 inoremap <Down> <C-o>:echo "No down for you!"<CR>
-" }}}
 
+nnoremap <space> :
+
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+
+" }}}
 
 " VIMSCRIPT -------------------------------------------------------------- {{{
 
@@ -127,9 +148,11 @@ augroup END
 
 " }}}
 
-
 " STATUS LINE ------------------------------------------------------------ {{{
 
 " Status bar code goes here.
 
 " }}}
+
+" options: gruvbox, purify, nord, nightfly
+colorscheme gruvbox
