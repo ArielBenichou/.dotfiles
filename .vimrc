@@ -1,21 +1,122 @@
+" SETTINGS -------------------------------------------------------------- {{{
+" Turn syntax highlighting on.
 syntax on
+
+" Use if exists the .vimrc of cwd
 set exrc
+
+" Set the cursor on insert mode to block
 set guicursor=
+
+" Relative line nubmers up and down of current line
 set relativenumber
+
+" Add numbers to each line on the left-hand side.
 set nu
+
+" No highlight search -- so the highlight does not keep after search
 set nohlsearch
+
 set hidden
+
+" disable sound of error
 set noerrorbells
-set tabstop=4 softtabstop=4
+
+" Set shift width to 4 spaces.
 set shiftwidth=4
+
+" Set tab width to 4 columns.
+set tabstop=4 softtabstop=4
+
+" Use space characters instead of tabs.
 set expandtab
-set smartindent
-set nowrap
-set noswapfile
+
+" Do not save backup files.
 set nobackup
+
+" Do not let cursor scroll below or above N number of lines when scrolling.
+set scrolloff=10
+
+" Do not wrap lines. Allow long lines to extend as far as the line goes.
+set nowrap
+
+" While searching though a file incrementally 
+" highlight matching characters as you type.
+set incsearch
+
+set noswapfile
 set undodir=~/.vim/undodir
 set undofile
-set incsearch
-set scrolloff=8
+
+" the grey column at the left side
 set signcolumn=yes
+
+" red column telling me that i'm a bad programmer
 set colorcolumn=80
+
+" Disable compatibility with vi which can cause unexpected issues.
+set nocompatible
+
+" Set the commands to save in history default number is 20.
+set history=1000
+
+" Enable auto completion menu after pressing TAB.
+set wildmenu
+
+" Make wildmenu behave like similar to Bash completion.
+set wildmode=list:longest
+
+" There are certain files that we would never want to edit with Vim.
+" Wildmenu will ignore files with these extensions.
+set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
+
+" Enable type file detection. 
+" Vim will be able to try to detect the type of file in use.
+filetype on
+
+" Enable plugins and load plugin for the detected file type.
+filetype plugin on
+
+" Load an indent file for the detected file type.
+filetype indent on
+
+" }}}
+
+
+" PLUGINS ---------------------------------------------------------------- {{{
+
+call plug#begin('~/.vim/plugged')
+
+
+
+call plug#end()
+
+" }}}
+
+
+" MAPPINGS --------------------------------------------------------------- {{{
+
+" Mappings code goes here.
+
+" }}}
+
+
+" VIMSCRIPT -------------------------------------------------------------- {{{
+
+" This will enable code folding.
+" Use the marker method of folding.
+augroup filetype_vim
+    autocmd!
+    autocmd FileType vim setlocal foldmethod=marker
+augroup END
+
+" More Vimscripts code goes here.
+
+" }}}
+
+
+" STATUS LINE ------------------------------------------------------------ {{{
+
+" Status bar code goes here.
+
+" }}}
