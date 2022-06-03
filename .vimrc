@@ -1,3 +1,14 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"
+"               ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗
+"               ██║   ██║██║████╗ ████║██╔══██╗██╔════╝
+"               ██║   ██║██║██╔████╔██║██████╔╝██║
+"               ╚██╗ ██╔╝██║██║╚██╔╝██║██╔══██╗██║
+"                ╚████╔╝ ██║██║ ╚═╝ ██║██║  ██║╚██████╗
+"                 ╚═══╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " SETTINGS -------------------------------------------------------------- {{{
 " Turn syntax highlighting on.
 syntax on
@@ -40,7 +51,7 @@ set scrolloff=10
 " Do not wrap lines. Allow long lines to extend as far as the line goes.
 set nowrap
 
-" While searching though a file incrementally 
+" While searching though a file incrementally
 " highlight matching characters as you type.
 set incsearch
 
@@ -73,7 +84,7 @@ set wildignore=*.docx,*.jpg,*.png,*.gif,*.pdf,*.pyc,*.exe,*.flv,*.img,*.xlsx
 " Give more space to cmd message
 set cmdheight=2
 
-" Enable type file detection. 
+" Enable type file detection.
 " Vim will be able to try to detect the type of file in use.
 filetype on
 
@@ -92,7 +103,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'dense-analysis/ale'
 
   Plug 'preservim/nerdtree'
-  
+
   Plug 'arcticicestudio/nord-vim'
 
   Plug 'bluz71/vim-nightfly-guicolors'
@@ -100,14 +111,14 @@ call plug#begin('~/.vim/plugged')
   Plug 'gruvbox-community/gruvbox'
 
   Plug 'kyoz/purify', { 'rtp': 'vim' }
-  
+
 call plug#end()
 
 " }}}
 
 " MAPPINGS --------------------------------------------------------------- {{{
 
-let mapleader = "\\"
+let mapleader = " "
 
 " Alt Escape of insert mode
 inoremap jj <esc>
@@ -126,12 +137,10 @@ nnoremap <Down> :echo "No down for you!"<CR>
 vnoremap <Down> :<C-u>echo "No down for you!"<CR>
 inoremap <Down> <C-o>:echo "No down for you!"<CR>
 
-nnoremap <space> :
+nnoremap <leader><space> :
 
-nnoremap <leader>n :NERDTreeFocus<CR>
-nnoremap <C-n> :NERDTree<CR>
-nnoremap <C-t> :NERDTreeToggle<CR>
-nnoremap <C-f> :NERDTreeFind<CR>
+nnoremap <leader>ps :NERDTreeFocus<CR>
+nnoremap <leader>pS :NERDTreeToggle<CR>
 
 " }}}
 
@@ -144,13 +153,37 @@ augroup filetype_vim
     autocmd FileType vim setlocal foldmethod=marker
 augroup END
 
-" More Vimscripts code goes here.
+" Start NERDTree and leave the cursor in it.
+autocmd VimEnter * NERDTree
 
+fun! TrimWhiteSpace()
+    let l:save = winsaveview()
+    keeppatterns %s/\s\+$//e
+    call winrestview(l:save)
+endfun
+
+augroup MINI_SCARABEE
+    autocmd!
+    autocmd BufWritePre * :call TrimWhiteSpace()
+augroup END
 " }}}
 
 " STATUS LINE ------------------------------------------------------------ {{{
 
-" Status bar code goes here.
+" Clear status line when vimrc is reloaded.
+set statusline=
+
+" Status line left side.
+set statusline+=\ %F\ %M\ %Y\ %R
+
+" Use a divider to separate the left side from the right side.
+set statusline+=%=
+
+" Status line right side.
+set statusline+=\ ascii:\ %b\ hex:\ 0x%B\ row:\ %l\ col:\ %c\ percent:\ %p%%
+
+" Show the status on the second to last line.
+set laststatus=2
 
 " }}}
 
