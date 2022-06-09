@@ -1,3 +1,1 @@
-.vim/autoload
-.vim/plugged
-.vim/colors
+.vim/*

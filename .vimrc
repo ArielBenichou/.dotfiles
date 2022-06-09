@@ -13,6 +13,8 @@
 " Turn syntax highlighting on.
 syntax on
 
+set encoding=UTF-8
+
 " Use if exists the .vimrc of cwd
 set exrc
 
@@ -102,7 +104,7 @@ call plug#begin('~/.vim/plugged')
 
   Plug 'dense-analysis/ale'
 
-  Plug 'preservim/nerdtree'
+  " Plug 'preservim/nerdtree'
 
   Plug 'arcticicestudio/nord-vim'
 
@@ -113,6 +115,8 @@ call plug#begin('~/.vim/plugged')
   Plug 'kyoz/purify', { 'rtp': 'vim' }
 
   Plug 'vim-airline/vim-airline'
+
+  " Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
 
@@ -141,8 +145,8 @@ inoremap <Down> <C-o>:echo "No down for you!"<CR>
 
 nnoremap <leader><space> :
 
-nnoremap <leader>ps :NERDTreeFocus<CR>
-nnoremap <leader>pS :NERDTreeToggle<CR>
+" nnoremap <leader>ps :NERDTreeFocus<CR>
+" nnoremap <leader>pS :NERDTreeToggle<CR>
 
 " }}}
 
@@ -156,7 +160,7 @@ augroup filetype_vim
 augroup END
 
 " Start NERDTree and leave the cursor in it.
-autocmd VimEnter * NERDTree
+" autocmd VimEnter * NERDTree
 
 fun! TrimWhiteSpace()
     let l:save = winsaveview()
