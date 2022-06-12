@@ -102,6 +102,8 @@ filetype indent on
 
 call plug#begin('~/.vim/plugged')
 
+  Plug 'prabirshrestha/vim-lsp'
+
   Plug 'dense-analysis/ale'
 
   " Plug 'preservim/nerdtree'
