@@ -145,7 +145,7 @@ nnoremap <Down> :echo "No down for you!"<CR>
 vnoremap <Down> :<C-u>echo "No down for you!"<CR>
 inoremap <Down> <C-o>:echo "No down for you!"<CR>
 
-nnoremap <leader>x :!chmod +x %<CR>
+nnoremap <leader>x :silent !chmod +x %<CR>
 nnoremap <silent> <C-f> :silent !tmux neww tmux-sessionizer<CR>
 
 " }}}

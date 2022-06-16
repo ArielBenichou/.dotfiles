@@ -3,6 +3,12 @@
 ## Clone Repo
 Download this repo in the `~/.` folder
 
+## Download
+- tmux
+- stow
+- git
+- vim
+
 ## Bootstrap
 use the `bootstrap.sh` script to create the symlinks
 
