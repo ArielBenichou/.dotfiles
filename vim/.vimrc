@@ -202,4 +202,4 @@ augroup END
 " }}}
 
 " options: gruvbox, purify, nord, nightfly
-colorscheme gruvbox
+" colorscheme gruvbox
