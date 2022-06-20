@@ -2,14 +2,14 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/arielbenichou/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME=robbyrussell
 
-path+=('/Users/arielbenichou/bin/.local/bin')
+addToPathFront $HOME/.local/.npm-global/bin
+addToPathFront $HOME/.local/n/bin/
+addToPathFront $HOME/.local/bin
 
 bindkey -s ^f "tmux-sessionizer\n"
-
-alias ccmatrix="cmatrix -a -b -f -C cyan"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
