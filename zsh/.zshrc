@@ -3,7 +3,14 @@
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+
 ZSH_THEME=robbyrussell
+
+addToPathFront() {
+    if [[ "$PATH" != *"$1"* ]]; then
+        export PATH=$1:$PATH
+    fi
+}
 
 addToPathFront $HOME/.local/.npm-global/bin
 addToPathFront $HOME/.local/n/bin/
