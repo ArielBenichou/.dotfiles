@@ -1,2 +1,3 @@
 vim/.vim/*
-bin/.local/.npm-global
+bin/.local/
+!bin/.local/bin

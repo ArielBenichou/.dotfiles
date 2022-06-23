@@ -100,13 +100,11 @@ filetype indent on
 
 " PLUGINS ---------------------------------------------------------------- {{{
 
-call plug#begin('~/.vim/plugged')
+call plug#begin()
 
   Plug 'prabirshrestha/vim-lsp'
 
   Plug 'dense-analysis/ale'
-
-  " Plug 'preservim/nerdtree'
 
   Plug 'arcticicestudio/nord-vim'
 
@@ -203,4 +201,4 @@ augroup END
 " }}}
 
 " options: gruvbox, purify, nord, nightfly
-" colorscheme gruvbox
+colorscheme gruvbox
