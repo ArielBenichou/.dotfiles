@@ -12,6 +12,15 @@ addToPathFront() {
     fi
 }
 
+purgeMultipass() {
+    for n in $(multipass ls --format json | jq '.list[].name'); do
+        mpn=$(echo $n | tr -d '"')
+        multipass stop $mpn
+        multipass delete $mpn
+    done
+    multipass purge
+}
+
 addToPathFront $HOME/.local/.npm-global/bin
 addToPathFront $HOME/.local/n/bin/
 addToPathFront $HOME/.local/bin
