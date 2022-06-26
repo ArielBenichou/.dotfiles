@@ -106,15 +106,7 @@ call plug#begin('~/.vim/plugged')
 
   Plug 'dense-analysis/ale'
 
-  " Plug 'preservim/nerdtree'
-
-  Plug 'arcticicestudio/nord-vim'
-
-  Plug 'bluz71/vim-nightfly-guicolors'
-
   Plug 'gruvbox-community/gruvbox'
-
-  Plug 'kyoz/purify', { 'rtp': 'vim' }
 
   Plug 'vim-airline/vim-airline'
 
@@ -202,5 +194,4 @@ augroup END
 
 " }}}
 
-" options: gruvbox, purify, nord, nightfly
-" colorscheme gruvbox
+colorscheme gruvbox
