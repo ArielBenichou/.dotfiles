@@ -3,16 +3,10 @@
 ## Clone Repo
 Download this repo in the `~/.` folder
 
-## Download
-- tmux
-- stow
-- git
-- vim
+## Stow
+use the `setup-stow-folders` to stow the dotfiles to the home directory.
 
-## Bootstrap
-use the `bootstrap.sh` script to create the symlinks
-
-## Install Plugin Manager
+## VIM - Install Plugin Manager
 
 ### On Linux or Mac OS.
 ```sh
