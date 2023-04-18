@@ -22,3 +22,20 @@ $ iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim 
 ### Install Plugins
 In vim:
 Now type `:PlugInstall` to download and install the two plugins.
+
+# TODO
+- start a new
+- use stow to stow the folder to the user root path (e.g. git -> ~)
+- add ansible that install all dependencies: tmux, fdfind, ripgrep, fzf, difftastic, stow, cmatrix ...
+- add ansible that install oh my zsh
+- add ansible that build nvim
+- add a git folder with gitconfig
+- add zsh folder with profile and functions
+- add .local/scripts folder with custom scripts like tmux-sessionizer
+
+# Set up new machine
+- clone this repo
+- install ansible
+- run ansible playbook to install and build dependencies
+- stow folders to user home (git, zsh, scripts)
+- git clone init.nvim repo & install packer
