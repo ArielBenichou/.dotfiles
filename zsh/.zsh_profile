@@ -1,0 +1,7 @@
+export XDG_CONFIG_HOME=$HOME/.config
+VIM="nvim"
+
+source ~/zsh/path
+source ~/zsh/shortcuts
+source ~/zsh/aliases
+source ~/zsh/git

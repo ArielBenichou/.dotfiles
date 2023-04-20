@@ -1,7 +1,26 @@
 [user]
 	name = ArielBenichou
 	email = videojr3000@users.noreply.github.com
+[core]
+    autocrlf = false
+	editor = vim
 [init]
 	defaultBranch = main
-[core]
-	autocrlf = false
+[diff]
+    tool = difftastic
+	external = difft
+
+[difftool]
+    prompt = false
+
+[difftool "difftastic"]
+    cmd = difft "$LOCAL" "$REMOTE"
+
+# Use a pager for large output, just like other git commands.
+[pager]
+    difftool = true
+
+# `git dft` is less to type than `git difftool`.
+[alias]
+    dft = difftool
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --

@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+function fuzzySearchAllGitBranches() {
+    branches=`git branch -a | fzf | sed 's/remotes\/origin\///' | sed 's/\* //'`
+    echo $branches
+}
+alias gitsab=fuzzySearchAllGitBranches
+
+function gitCheckoutByFuzzySearchBranch() {
+    git checkout $(fuzzySearchAllGitBranches)
+}
+alias gitchk=gitCheckoutByFuzzySearchBranch

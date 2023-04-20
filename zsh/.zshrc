@@ -6,27 +6,6 @@ export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME=robbyrussell
 
-addToPathFront() {
-    if [[ "$PATH" != *"$1"* ]]; then
-        export PATH=$1:$PATH
-    fi
-}
-
-purgeMultipass() {
-    for n in $(multipass ls --format json | jq '.list[].name'); do
-        mpn=$(echo $n | tr -d '"')
-        multipass stop $mpn
-        multipass delete $mpn
-    done
-    multipass purge
-}
-
-addToPathFront $HOME/.local/.npm-global/bin
-addToPathFront $HOME/.local/n/bin/
-addToPathFront $HOME/.local/bin
-
-bindkey -s ^f "tmux-sessionizer\n"
-
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
 # a theme from this variable instead of looking in $ZSH/themes/
@@ -87,9 +66,14 @@ bindkey -s ^f "tmux-sessionizer\n"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions)
+plugins=(
+	git
+   	zsh-autosuggestions
+    kubectl-autocomplete
+)
 
 source $ZSH/oh-my-zsh.sh
+source ~/.zsh_profile
 
 # User configuration
 
@@ -116,5 +100,15 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+export PATH=$PATH:/usr/local/go/bin
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
