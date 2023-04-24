@@ -1,4 +1,0 @@
-#!/usr/bin/env zsh
-alias fd=fdfind
-alias vim=nvim
-alias k=kubectl
