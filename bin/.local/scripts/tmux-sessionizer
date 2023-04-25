@@ -3,7 +3,8 @@
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    selected=`fdfind . ~/personal ~/dior ~ -H -d 1 -t d | fzf`
+    dotfiles="$HOME/.dotfiles"
+    selected=`fdfind . ~/personal ~/dior -H -d 1 -t d | sed $(echo '$a' "$dotfiles" | tr -d ' ') | fzf`
 fi
 
 if [[ -z $selected ]]; then
