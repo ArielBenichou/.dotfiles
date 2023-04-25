@@ -5,3 +5,5 @@ alias vim=nvim
 alias k=kubectl
 alias xsc="xclip -selection clipboard"
 alias my_ip="ip address | grep -o \"inet 192.*/\" | awk '{ print \$2 }' | tr / ' ' | xargs"
+alias todo="glow ~/TODO.md"
+alias todoe="nvim ~/TODO.md"
