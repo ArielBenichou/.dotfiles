@@ -10,18 +10,35 @@ sudo apt-get -y update
 sudo apt-get -y install cmatrix figlet fzf ripgrep tldr tmux jq stow tree zsh nodejs fd-find
 # Oh-My-Zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# OH MY ZSH Plugins
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 sudo snap install docker
 # NVM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 # Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 # Install more deps with cargo
-cargo install difftastic 
+cargo install difftastic
+# Kubernetes
+sudo snap install kubectl --classic
+mkdir -p ~/.oh-my-zsh/custom/plugins/kubectl-autocomplete/
+kubectl completion zsh > ~/.oh-my-zsh/custom/plugins/kubectl-autocomplete/kubectl-autocomplete.plugin.zsh
+# Install Krew
+(
+  set -x; cd "$(mktemp -d)" &&
+  OS="$(uname | tr '[:upper:]' '[:lower:]')" &&
+  ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')" &&
+  KREW="krew-${OS}_${ARCH}" &&
+  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz" &&
+  tar zxvf "${KREW}.tar.gz" &&
+  ./"${KREW}" install krew
+)
+kubectl krew install ctx
+kubectl krew install ns
 ```
 
 add to install:
-- `kubectl + autocomplete`
-- `krew + kubectx kubens`
+- `k9s`
 - `difftastic`
 - `go`
   
