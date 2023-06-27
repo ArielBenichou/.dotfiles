@@ -3,47 +3,42 @@
 ## Clone Repo
 Download this repo in the `~/.` folder
 
+## Install Dependencies
+
+```
+sudo apt-get -y update
+sudo apt-get -y install cmatrix figlet fzf ripgrep tldr tmux jq stow tree zsh nodejs fd-find
+# Oh-My-Zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+sudo snap install docker
+# NVM
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+# Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+# Install more deps with cargo
+cargo install difftastic 
+```
+
+add to install:
+- `kubectl + autocomplete`
+- `krew + kubectx kubens`
+- `difftastic`
+- `go`
+  
+## Install NeoVim
+```
+sudo apt-get install ninja-build \
+     gettext libtool libtool-bin \
+     autoconf automake cmake g++ \
+     pkg-config unzip
+git clone https://github.com/neovim/neovim.git
+cd neovim
+git checkout stable
+make CMAKE_BUILD_TYPE=Release install
+```
+
 ## Stow
 use the `setup-stow-folders` to stow the dotfiles to the home directory.
-
-## VIM - Install Plugin Manager
-
-### On Linux or Mac OS.
-```sh
-$ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-```
-### On Windows with Powershell.
-```sh
-$ iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
-    ni $HOME/vimfiles/autoload/plug.vim -Force
-```
-### Install Packages
-```
-cmatrix
-docker?
-git?
-fdfind
-figlet
-fzf
-kubectl + autocomplete
-krew + kubectx kubens
-build neovim
-node / n / nvm / fnm
-ripgrep
-tldr
-tmux
-zsh
-oh-my-zsh
-difftastic
-jq
-stow
-tree
-```
-
-### Install Plugins
-In vim:
-Now type `:PlugInstall` to download and install the two plugins.
 
 # TODO
 - [ ] start a new
