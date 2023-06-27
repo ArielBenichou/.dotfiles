@@ -2,6 +2,7 @@
 
 ## Clone Repo
 Download this repo in the `~/.` folder
+with submodule `git submodule update --init`
 
 ## Install Dependencies
 
@@ -59,6 +60,10 @@ git clone https://github.com/neovim/neovim.git
 cd neovim
 git checkout stable
 make CMAKE_BUILD_TYPE=Release install
+
+# Install Packer
+git clone --depth 1 https://github.com/wbthomason/packer.nvim\
+ ~/.local/share/nvim/site/pack/packer/start/packer.nvim
 ```
 
 ## Stow
