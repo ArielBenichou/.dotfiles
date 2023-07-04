@@ -4,7 +4,7 @@ if [[ $# -eq 1 ]]; then
     selected=$1
 else
     dotfiles="$HOME/.dotfiles"
-    selected=`fdfind . ~/personal ~/work -H -d 1 -t d | sed $(echo '$a' "$dotfiles" | tr -d ' ') | fzf`
+    selected=`(fd . ~/personal ~/work -H -d 1 -t d ; echo "~/.dotfiles") | fzf`
 fi
 
 if [[ -z $selected ]]; then
