@@ -19,7 +19,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 # Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 # Install more deps with cargo
-cargo install difftastic
+cargo install difftastic bat exa du-dust
 # Kubernetes
 sudo snap install kubectl --classic
 mkdir -p ~/.oh-my-zsh/custom/plugins/kubectl-autocomplete/
