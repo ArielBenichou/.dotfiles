@@ -69,7 +69,7 @@ ZSH_THEME=robbyrussell
 plugins=(
 	git
    	zsh-autosuggestions
-    kubectl-autocomplete
+    # kubectl-autocomplete
 )
 
 source $ZSH/oh-my-zsh.sh
