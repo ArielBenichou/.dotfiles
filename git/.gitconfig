@@ -4,6 +4,7 @@
 [core]
     autocrlf = false
 	editor = vim
+	compression = 9
 [init]
 	defaultBranch = main
 [diff]
@@ -24,3 +25,5 @@
 [alias]
     dft = difftool
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+[push]
+	autoSetupRemote = true
