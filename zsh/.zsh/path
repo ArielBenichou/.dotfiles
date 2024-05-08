@@ -16,3 +16,7 @@ addToPathFront $HOME/.local/n/bin/
 addToPathFront $HOME/.local/bin
 addToPathFront $HOME/.local/scripts
 addToPathFront $HOME/.bun/bin
+addToPathFront $HOME/Library/premake-5.0.0-beta2-macOS/
+addToPathFront $HOME/Library/callGraph/
+
+addToPathFront $HOME/.rbenv/versions/2.7.5/bin

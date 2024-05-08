@@ -2,28 +2,47 @@
 	name = ArielBenichou
 	email = videojr3000@users.noreply.github.com
 [core]
-    autocrlf = false
+  autocrlf = false
 	editor = vim
 	compression = 9
 [init]
 	defaultBranch = main
+
+[fetch]
+  prune = true
+
 [diff]
-    tool = difftastic
+  tool = difftastic
 	external = difft
 
 [difftool]
-    prompt = false
+  prompt = false
 
 [difftool "difftastic"]
-    cmd = difft "$LOCAL" "$REMOTE"
+  cmd = difft "$LOCAL" "$REMOTE"
 
 # Use a pager for large output, just like other git commands.
 [pager]
-    difftool = true
+  difftool = true
 
 # `git dft` is less to type than `git difftool`.
 [alias]
-    dft = difftool
+  dft = difftool
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+	append = town append
+	compress = town compress
+	contribute = town contribute
+	diff-parent = town diff-parent
+	hack = town hack
+	kill = town kill
+	observe = town observe
+	park = town park
+	prepend = town prepend
+	propose = town propose
+	rename-branch = town rename-branch
+	repo = town repo
+	set-parent = town set-parent
+	ship = town ship
+	sync = town sync
 [push]
 	autoSetupRemote = true
