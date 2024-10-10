@@ -1,3 +1,4 @@
 #!/usr/bin/env zsh
+# bindkey -s ^f "zellij-sessionizer ~/work/ ~/personal/ ~/github/\n"
 bindkey -s ^f "tmux-sessionizer\n"
-bindkey -s ^k "vim .\n"
+bindkey -s ^k "nvim .\n"

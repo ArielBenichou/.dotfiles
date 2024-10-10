@@ -1,3 +1,3 @@
 vim/.vim/*
-bin/.local/share
-bin/.local/state
+bin/.local/
+!bin/.local/scripts
