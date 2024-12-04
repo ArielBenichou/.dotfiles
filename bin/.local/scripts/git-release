@@ -1,0 +1,153 @@
+#!/usr/bin/env node
+
+const { execSync } = require('child_process');
+
+function isGitRepo() {
+  try {
+    execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
+    return true;
+  } catch {
+    console.error('Error: Not inside a git repository');
+    process.exit(1);
+  }
+}
+
+function getCurrentBranch() {
+  try {
+    return execSync('git branch --show-current').toString().trim();
+  } catch {
+    console.error('Error: Could not get current branch');
+    process.exit(1);
+  }
+}
+
+function getReleaseBranchParts(branch) {
+  const releaseRegex = /release\/([a-zA-Z0-9_-]*)?\/?(v\d+\.\d+\.\d+)/;
+  const match = branch.match(releaseRegex);
+  return {
+    isValid: Boolean(match),
+    branch: match?.[0],
+    tag: match?.[1],
+    version: match?.[2],
+  };
+}
+
+function validateReleaseBranch(branch) {
+  return getReleaseBranchParts(branch).isValid;
+}
+
+function getReleaseBranches() {
+  try {
+    const branches = execSync('git branch -a --format="%(refname:short)"')
+      .toString()
+      .trim()
+      .split('\n')
+      .map(getReleaseBranchParts)
+      .filter(branch => branch.isValid)
+      .map(branch => branch.branch);
+    return branches;
+  } catch {
+    console.error('Error: Could not list release branches');
+    process.exit(1);
+  }
+}
+
+function compareSemanticVersions(a, b) {
+  const parseVersion = (version) => {
+    const match = version.match(/v?(\d+)\.(\d+)\.(\d+)(-[a-zA-Z0-9]+)?/);
+    if (!match) throw new Error(`Invalid version format: ${version}`);
+
+    return {
+      major: parseInt(match[1] ?? ""),
+      minor: parseInt(match[2] ?? ""),
+      patch: parseInt(match[3] ?? ""),
+      prerelease: match[4] || ''
+    };
+  };
+
+  const va = parseVersion(a);
+  const vb = parseVersion(b);
+
+  if (va.major !== vb.major) return va.major - vb.major;
+  if (va.minor !== vb.minor) return va.minor - vb.minor;
+  if (va.patch !== vb.patch) return va.patch - vb.patch;
+
+  // Handle prereleases: a prerelease is always less than a release
+  if (va.prerelease && !vb.prerelease) return -1;
+  if (!va.prerelease && vb.prerelease) return 1;
+
+  return va.prerelease.localeCompare(vb.prerelease);
+}
+
+/**
+ * mode = "prev" or "next"
+  */
+function findReleaseBranch(currentBranch, branches, mode) {
+  const sortedBranches = branches.sort(compareSemanticVersions);
+  if(mode == 'prev') {
+    sortedBranches.reverse()
+  }
+  const currentIndex = sortedBranches.indexOf(currentBranch);
+
+  if (currentIndex === -1) {
+    console.error(`Error: Current branch '${currentBranch}' not found in release branches`);
+    process.exit(1);
+  }
+
+  const nextBranch = sortedBranches[currentIndex + 1];
+
+  if (!nextBranch) {
+    console.error(`Error: No ${mode === "prev" ? "previous" : "next"} release branch found`);
+    process.exit(1);
+  }
+
+  return nextBranch;
+}
+
+function isNonTaggedRelease(branch) {
+  return getReleaseBranchParts(branch).tag === undefined;
+}
+
+function printHelp() {
+  console.log(`
+Usage: git release <command> [options]
+
+Commands:
+  prev    Find the previous release branch
+  next    Find the next release branch
+`);
+  process.exit(0);
+}
+
+function main() {
+  isGitRepo();
+
+  const args = process.argv.slice(2);
+
+  if (args.length === 0 || args[0] === '--help' || args[0] === '-h') {
+    printHelp();
+  }
+
+  const command = args[0];
+  if(command != "prev" && command != "next") {
+    console.error("Invalid subcommand");
+    printHelp();
+  }
+
+  const currentBranch = getCurrentBranch();
+  const {isValid, tag} = getReleaseBranchParts(currentBranch);
+
+  if (!isValid) {
+    console.error(`Error: Current branch '${currentBranch}' is not a release branch`);
+    process.exit(1);
+  }
+
+  const releaseBranches = getReleaseBranches();
+  let tagReleases = releaseBranches.filter(b=> tag ? b.includes(tag) : isNonTaggedRelease(b));
+  tagReleases = [...new Set(tagReleases)];
+  const previousReleaseBranch = findReleaseBranch(currentBranch, tagReleases, command);
+
+  console.log(previousReleaseBranch);
+}
+
+main();

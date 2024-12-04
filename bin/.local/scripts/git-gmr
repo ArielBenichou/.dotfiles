@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# Function to prompt for installing dependencies
+yes_or_no_prompt() {
+        read -p "$1 (y/n)? " response
+        # Default to 'y' if the response is empty
+        response=${response:-y}
+        if [[ "$response" =~ ^[Yy]$ ]]; then
+                $2
+                # Verify the command was installed
+                if ! command -v $(echo "$2" | awk '{print $NF}') &>/dev/null; then
+                        echo "Installation failed. Please try installing manually."
+                        exit 1
+                fi
+        fi
+}
+
+# Check if fzf is installed
+if ! command -v fzf &>/dev/null; then
+        echo "fzf is not installed."
+        yes_or_no_prompt "Would you like to install fzf?" "brew install fzf"
+fi
+
+# Check if glab is installed
+if ! command -v glab &>/dev/null; then
+        echo "glab is not installed."
+        yes_or_no_prompt "Would you like to install glab?" "brew install glab"
+fi
+
+# Check if glab is authenticated
+if ! glab auth status &>/dev/null; then
+        echo "glab is not authenticated."
+        yes_or_no_prompt "Would you like to authenticate glab?" "glab auth login -g ssh"
+fi
+
+# Get the current branch
+current_branch=$(git symbolic-ref --short HEAD)
+
+# Prompt the user with the current branch
+echo "You are currently on branch: $current_branch"
+
+# Prompt the user to continue
+read -p "Do you want to continue? (y/n) " continue_response
+# Default to 'y' if the response is empty
+continue_response=${continue_response:-y}
+if [[ ! "$continue_response" =~ ^[Yy]$ ]]; then
+        echo "Aborted."
+        exit 1
+fi
+
+# Extract the issue number from the current branch name
+issue_number=$(echo "$current_branch" | grep -o 'NX-[0-9]\+')
+
+# Get the list of all branches and allow the user to select the target branch using fzf
+target_branch=$(git branch --format '%(refname:short)' | fzf --prompt="Select target branch: ")
+
+# Check if a target branch was selected
+if [ -z "$target_branch" ]; then
+        echo "No target branch selected. Aborting."
+        exit 1
+fi
+
+# Get the latest commit message
+latest_commit_message=$(git log -1 --pretty=%B | tr -d '\n')
+
+# Check if the target branch exists locally
+if ! git show-ref --verify --quiet refs/heads/"$target_branch"; then
+        echo "Target branch '$target_branch' does not exist locally. Aborting."
+        exit 1
+fi
+
+# Create a merge request using glab
+if ! glab mr create \
+        --source-branch "$current_branch" \
+        --target-branch "$target_branch" \
+        --title "$issue_number $latest_commit_message" \
+        --description "" \
+        --web; then
+        echo "Failed to create merge request. Please ensure 'glab' is installed and configured."
+        exit 1
+fi
+
+echo "Merge request successfully created."
