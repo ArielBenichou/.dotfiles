@@ -1,10 +1,6 @@
 #!/usr/bin/env zsh
-alias fd=fdfind
-alias bat=batcat
 alias k=kubectl
 alias xsc="xclip -selection clipboard"
-alias todo="glow ~/TODO.md"
-alias todoe="nvim ~/TODO.md"
 alias setupproxyman="set -a && source \"/Users/arielbenichou/.proxyman/proxyman_env_automatic_setup.sh\" && set +a"
 alias syncnetworx="sh ~/work/scripts/rsync_networx.sh"
 alias upenv="sh ~/work/scripts/upenv.sh"

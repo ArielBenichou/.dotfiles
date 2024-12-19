@@ -1,63 +1,135 @@
 #!/bin/bash
 
-# Function to prompt for installing dependencies
-yes_or_no_prompt() {
-        read -p "$1 (y/n)? " response
-        # Default to 'y' if the response is empty
-        response=${response:-y}
-        if [[ "$response" =~ ^[Yy]$ ]]; then
-                $2
-                # Verify the command was installed
-                if ! command -v $(echo "$2" | awk '{print $NF}') &>/dev/null; then
-                        echo "Installation failed. Please try installing manually."
-                        exit 1
-                fi
-        fi
+set -e
+
+show_help() {
+  cat <<EOF
+Usage: $0 [options]
+
+Options:
+  -h           Show this help message and exit.
+  --setup      Run setup steps (installing and checking fzf, glab, and glab auth).
+  --push       Automatically push the current branch if not up-to-date, without asking.
+  --release    Automatically target the 'release' branch without prompting.
+EOF
 }
 
-# Check if fzf is installed
-if ! command -v fzf &>/dev/null; then
-        echo "fzf is not installed."
-        yes_or_no_prompt "Would you like to install fzf?" "brew install fzf"
-fi
+DO_SETUP=false
+DO_PUSH=false
+DO_RELEASE=false
 
-# Check if glab is installed
-if ! command -v glab &>/dev/null; then
-        echo "glab is not installed."
-        yes_or_no_prompt "Would you like to install glab?" "brew install glab"
-fi
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  -h)
+    show_help
+    exit 0
+    ;;
+  --setup)
+    DO_SETUP=true
+    shift
+    ;;
+  --push)
+    DO_PUSH=true
+    shift
+    ;;
+  --release)
+    DO_RELEASE=true
+    shift
+    ;;
+  *)
+    echo "Unknown option: $1"
+    show_help
+    exit 1
+    ;;
+  esac
+done
 
-# Check if glab is authenticated
-if ! glab auth status &>/dev/null; then
-        echo "glab is not authenticated."
-        yes_or_no_prompt "Would you like to authenticate glab?" "glab auth login -g ssh"
+# Function to prompt for installing dependencies
+yes_or_no_prompt() {
+  read -p "$1 (y/n)? " response
+  # Default to 'y' if the response is empty
+  response=${response:-y}
+  if [[ "$response" =~ ^[Yy]$ ]]; then
+    $2
+    # Verify the command was installed
+    if ! command -v $(echo "$2" | awk '{print $NF}') &>/dev/null; then
+      echo "Installation failed. Please try installing manually."
+      exit 1
+    fi
+  fi
+}
+
+# Only run setup if --setup was given
+if $DO_SETUP; then
+  # Check if fzf is installed
+  if ! command -v fzf &>/dev/null; then
+    echo "fzf is not installed."
+    yes_or_no_prompt "Would you like to install fzf?" "brew install fzf"
+  fi
+
+  # Check if glab is installed
+  if ! command -v glab &>/dev/null; then
+    echo "glab is not installed."
+    yes_or_no_prompt "Would you like to install glab?" "brew install glab"
+  fi
+
+  # Check if glab is authenticated
+  if ! glab auth status &>/dev/null; then
+    echo "glab is not authenticated."
+    yes_or_no_prompt "Would you like to authenticate glab?" "glab auth login -g ssh"
+  fi
 fi
 
 # Get the current branch
 current_branch=$(git symbolic-ref --short HEAD)
 
+# Get the current HEAD commit hash
+local_commit=$(git rev-parse HEAD)
+
+# Check if the current branch exists and matches on the remote
+remote_commit=$(git ls-remote origin "$current_branch" | awk '{print $1}')
+
+if [ -z "$remote_commit" ] || [ "$remote_commit" != "$local_commit" ]; then
+  echo "Current branch '$current_branch' is not fully pushed to remote."
+  if $DO_PUSH; then
+    echo "--push flag provided. Pushing without asking..."
+    git push origin "$current_branch"
+    echo "Branch pushed successfully."
+  else
+    read -p "Do you want to push the current branch now? (y/n): " answer
+    if [[ "$answer" =~ ^[Yy]$ ]]; then
+      echo "Pushing branch '$current_branch'..."
+      git push origin "$current_branch"
+      echo "Branch pushed successfully."
+    else
+      echo "Aborting the script."
+      exit 1
+    fi
+  fi
+else
+  echo "Current branch '$current_branch' is already up-to-date on remote."
+fi
+
 # Prompt the user with the current branch
 echo "You are currently on branch: $current_branch"
-
-# Prompt the user to continue
-read -p "Do you want to continue? (y/n) " continue_response
-# Default to 'y' if the response is empty
-continue_response=${continue_response:-y}
-if [[ ! "$continue_response" =~ ^[Yy]$ ]]; then
-        echo "Aborted."
-        exit 1
-fi
 
 # Extract the issue number from the current branch name
 issue_number=$(echo "$current_branch" | grep -o 'NX-[0-9]\+')
 
-# Get the list of all branches and allow the user to select the target branch using fzf
-target_branch=$(git branch --format '%(refname:short)' | fzf --prompt="Select target branch: ")
+# If --release is passed, target 'release' branch. Otherwise, ask.
+if $DO_RELEASE; then
+  target_branch="release"
+  echo "--release flag provided. Using 'release' as target branch."
+else
+  # Get the list of all branches and allow the user to select the target branch using fzf
+  target_branch=$(git branch --format '%(refname:short)' | fzf --prompt="Select target branch: ")
+fi
 
-# Check if a target branch was selected
+# Check if a target branch was selected (when not using --release)
 if [ -z "$target_branch" ]; then
-        echo "No target branch selected. Aborting."
-        exit 1
+  echo "No target branch selected. Aborting."
+  exit 1
 fi
 
 # Get the latest commit message
@@ -65,19 +137,26 @@ latest_commit_message=$(git log -1 --pretty=%B | tr -d '\n')
 
 # Check if the target branch exists locally
 if ! git show-ref --verify --quiet refs/heads/"$target_branch"; then
-        echo "Target branch '$target_branch' does not exist locally. Aborting."
-        exit 1
+  echo "Target branch '$target_branch' does not exist locally. Aborting."
+  exit 1
+fi
+
+# Determine the MR title
+if [ -n "$issue_number" ] && [[ "$latest_commit_message" != *"$issue_number"* ]]; then
+  mr_title="$issue_number $latest_commit_message"
+else
+  mr_title="$latest_commit_message"
 fi
 
 # Create a merge request using glab
 if ! glab mr create \
-        --source-branch "$current_branch" \
-        --target-branch "$target_branch" \
-        --title "$issue_number $latest_commit_message" \
-        --description "" \
-        --web; then
-        echo "Failed to create merge request. Please ensure 'glab' is installed and configured."
-        exit 1
+  --source-branch "$current_branch" \
+  --target-branch "$target_branch" \
+  --title "$mr_title" \
+  --description "" \
+  --web; then
+  echo "Failed to create merge request. Please ensure 'glab' is installed and configured."
+  exit 1
 fi
 
 echo "Merge request successfully created."

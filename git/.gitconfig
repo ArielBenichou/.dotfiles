@@ -29,21 +29,6 @@
 [alias]
   dft = difftool
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
-	append = town append
-	compress = town compress
-	contribute = town contribute
-	diff-parent = town diff-parent
-	hack = town hack
-	kill = town kill
-	observe = town observe
-	park = town park
-	prepend = town prepend
-	propose = town propose
-	rename-branch = town rename-branch
-	repo = town repo
-	set-parent = town set-parent
-	ship = town ship
-	sync = town sync
 [push]
 	autoSetupRemote = true
 [gitbutler]

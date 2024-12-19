@@ -1,0 +1,104 @@
+#!/bin/zsh
+
+# Check if correct number of arguments provided
+if [ $# -lt 2 ] || [ $# -gt 3 ]; then
+    echo "Usage: $0 <package.json-path> <patch|minor|major> [--no-commit]"
+    exit 1
+fi
+
+input_file=$1
+increment_type=$2
+no_commit=${3:-""}
+
+# Get absolute path of input file and its directory
+input_file_abs=$(realpath "$input_file")
+input_dir=$(dirname "$input_file_abs")
+file_name=$(basename "$input_file")
+
+# Validate increment type
+if [[ ! $increment_type =~ ^(patch|minor|major)$ ]]; then
+    echo "Error: Second argument must be 'patch', 'minor', or 'major'"
+    exit 1
+fi
+
+# Check if file exists
+if [ ! -f "$input_file" ]; then
+    echo "Error: File $input_file does not exist"
+    exit 1
+fi
+
+# Check if file is valid JSON
+if ! jq empty "$input_file" 2>/dev/null; then
+    echo "Error: File $input_file is not valid JSON"
+    exit 1
+fi
+
+# Get current version and calculate new version
+current_version=$(jq -r .version "$input_file")
+if [ -z "$current_version" ]; then
+    echo "Error: Could not find version field in $input_file"
+    exit 1
+fi
+
+new_version=$(npx semver -i "$increment_type" "$current_version")
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to increment version"
+    exit 1
+fi
+
+# Update the file with new version
+temp_contents=$(jq --arg version "$new_version" '.version = $version' "$input_file")
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to update JSON"
+    exit 1
+fi
+
+echo "$temp_contents" > "$input_file"
+
+echo "$current_version -> $new_version"
+
+# Handle Git operations if --no-commit is not present
+if [ "$no_commit" != "--no-commit" ]; then
+    # Check if we're in a git repository
+    if ! git -C "$input_dir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        echo "Warning: Not a git repository, skipping commit"
+        exit 0
+    fi
+
+    # Determine commit type based on increment type
+    case $increment_type in
+        major)
+            commit_type="feat!"
+            ;;
+        minor)
+            commit_type="feat"
+            ;;
+        patch)
+            commit_type="fix"
+            ;;
+    esac
+
+    # Change to the input file's directory
+    cd "$input_dir"
+
+    # Stage the file
+    git add "$file_name"
+
+    # Create commit message based on version type
+    commit_msg="$commit_type: bump version to $new_version"
+    
+    # If it's a major version, add BREAKING CHANGE footer
+    if [ "$increment_type" = "major" ]; then
+        commit_msg="$commit_msg
+
+BREAKING CHANGE: Major version bump to $new_version"
+    fi
+
+    # Commit the change
+    if git commit --no-verify -m "$commit_msg"; then
+        echo "$commit_msg"
+    else
+        echo "Error: Failed to commit changes"
+        exit 1
+    fi
+fi

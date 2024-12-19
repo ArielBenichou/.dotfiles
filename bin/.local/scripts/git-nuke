@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
 git reset --hard origin/$(git branch --show-current)
+git clean -fd $(git rev-parse --show-toplevel)

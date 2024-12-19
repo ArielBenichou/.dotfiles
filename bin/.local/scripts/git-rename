@@ -1,0 +1,20 @@
+#!/usr/bin/env zsh
+
+# Get current branch
+current_branch=$(git branch --show-current)
+[ -z "$current_branch" ] && echo "No current branch found." && exit 1
+
+# Create temp file
+tmpfile=$(mktemp /tmp/git-rename-branch.XXXXXX)
+echo "$current_branch" > "$tmpfile"
+
+# Open editor
+vim "$tmpfile"
+
+# Read updated branch name
+new_branch=$(cat "$tmpfile" | tr -d '[:space:]')
+rm "$tmpfile"
+
+# Rename branch
+[ -n "$new_branch" ] && [ "$new_branch" != "$current_branch" ] && git branch -m "$new_branch"
+
